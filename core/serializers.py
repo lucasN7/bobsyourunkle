@@ -5,7 +5,8 @@ class ContractSerializer(serializers.ModelSerializer):
     """ First Contract Serializer : all fields for now """
     class Meta:
         model = Contract
-        fields = '__all__'
+        fields = ("number", "start_dt", "end_dt", "cancel_dt", "created_dt", "modified_dt",
+                 "created_by", "modified_by", "clients", "status")
 
 class UserSerializer(serializers.ModelSerializer):
     """ First User Serializer : all fields for now """

@@ -16,20 +16,18 @@ class Contract(models.Model):
 	modified_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='contracts_modified_last')
 	
 	@property
-	def get_status(self):
-		""" Get the status on the contract:
+	def status(self):
+		""" Return the status on the contract:
+		- "Canceled" if cancel_dt is set
 		- "Pending" before the start_dt
 		- "Active" between the start_dt and end_dt
 		- "Finished" after the end_dt
-		- "Canceled" if cancel_dt is set
 	    """
 		today = date.today()
-		switcher = {
-			self.cancel_dt: "Canceled",
-			self.end_dt >= today : "Finished",
-			self.start_dt >= today : "Active"
-			}
-		return switcher.get(self, 'Pending')
+		if self.cancel_dt: return "Canceled"
+		if self.end_dt <= today: return "Finished"
+		if self.start_dt <= today: return "Active"
+		return 'Pending'
 
 
 	def clean(self):
