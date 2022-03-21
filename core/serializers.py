@@ -3,6 +3,7 @@ from .models import User, Contract
 
 class ContractSerializer(serializers.ModelSerializer):
     """ First Contract Serializer : all fields for now """
+
     class Meta:
         model = Contract
         fields = ("number", "start_dt", "end_dt", "cancel_dt", "created_dt", "modified_dt",
