@@ -17,6 +17,12 @@ class Contract(models.Model):
 	
 	@property
 	def get_status(self):
+		""" Get the status on the contract:
+		- "Pending" before the start_dt
+		- "Active" between the start_dt and end_dt
+		- "Finished" after the end_dt
+		- "Canceled" if cancel_dt is set
+	    """
 		today = date.today()
 		switcher = {
 			self.cancel_dt: "Canceled",
@@ -30,3 +36,5 @@ class Contract(models.Model):
 		cleaned_data = super().clean()
 		if self.start_dt >= self.end_dt:
 			raise ValidationError("Contract end date cannot be before its start date")
+
+#TODO: extend user and make email mandatory? Remove username?
