@@ -1,26 +1,69 @@
+from django.http import HttpResponseForbidden
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAdminUser
 from rest_framework import status, generics, mixins
-from .serializers import ContractSerializer, UserSerializer
+from .serializers import ContractSerializer, UserFullSerializer, UserPartialSerializer
 from .models import Contract, User
+from .utils import FullPartialSerializerMixin
+from .permissions import IsOwnerOrAdmin
 
 
-class ContractListCreView(generics.ListCreateAPIView):
-	""" ListCreateAPIView to manage Contracts"""
+""" Notes:
+1. Default permissions (from settings is @permission_classes([IsOwnerOrAdmin]))
+2. I liked in the past using the generics and mixins because of their powerful out of the box 
+features like filters that we usually need down the line
+"""
+
+class ContractListCreateView(generics.ListCreateAPIView):
+	""" List/Create APIView to manage Contracts"""
 	serializer_class = ContractSerializer 
-	queryset = Contract.objects.all()
+	
+	def get_queryset(self):
+		if not self.request.user.is_staff:
+			return self.request.user.contracts
+		return Contract.objects.all()
 
+	def post(self, request, *args, **kwargs):
+		return super().post(request, *args, **kwargs)
+	
+@permission_classes([IsOwnerOrAdmin])
 class ContractRetUpdDesView(generics.RetrieveUpdateDestroyAPIView):
-	""" RetrieveUpdateDestroyAPIView to manage Contracts"""
+	""" RetrieveUpdateDestroy APIView to manage Contracts"""
 	serializer_class = ContractSerializer 
 	queryset = Contract.objects.all()
 	lookup_field = 'number'
 
-class UserListCreView(generics.ListCreateAPIView):
-	""" ListCreateAPIView to manage Users"""
-	serializer_class = UserSerializer 
-	queryset = User.objects.all()
+	def get(self, request, *args, **kwargs):
+		return super().get(request, *args, **kwargs)
+	
+	def delete(self, request, *args, **kwargs):
+		if not request.user.is_staff:
+			return 
+		return super().delete(request, *args, **kwargs)
 
-class UserRetUpdDesView(generics.RetrieveUpdateDestroyAPIView):
-	""" RetrieveUpdateDestroyAPIView to manage Users"""
-	serializer_class = UserSerializer 
+
+# On this one, playing with dual serializer class to allow/return different set of data depending 
+# on the request method. Not sure how much you guys like this, keen for feedback!
+@permission_classes([IsAdminUser])
+class UserListCreateView(FullPartialSerializerMixin, generics.ListCreateAPIView):
+	""" ListCreateAPIView to manage Users"""
+	partial = False
+	queryset = User.objects.all()
+	full_serializer_class = UserFullSerializer
+	partial_serializer_class = UserPartialSerializer
+	
+	def get(self, request, *args, **kwargs):
+		self.partial = True
+		return super().get(request, *args, **kwargs)
+	
+	def post(self, request, *args, **kwargs):
+		self.partial = False
+		return super().post(request, *args, **kwargs)
+
+	
+@permission_classes([IsOwnerOrAdmin])
+class UserRetrieveDestroyView(mixins.DestroyModelMixin, generics.RetrieveAPIView):
+	""" Retrieve/Destroy APIView to manage Users"""
 	queryset = User.objects.all()
 	lookup_field = 'username'
+	serializer_class = UserFullSerializer
