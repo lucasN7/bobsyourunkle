@@ -1,6 +1,5 @@
 from datetime import timedelta
 from pathlib import Path
-from core.permissions import IsOwnerOrAdmin
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -106,7 +105,7 @@ REST_FRAMEWORK = {
     ],
     # for API default access with be "admin" <=> user.is_staff == True
     'DEFAULT_PERMISSION_CLASSES': [
-        IsOwnerOrAdmin,
+        'core.permissions.IsOwnerOrAdmin',
     ],
     # Exception handler to handle validation error nicely
     'EXCEPTION_HANDLER': 'bobsyourunkle.custom_exception_handler.django_error_handler',
