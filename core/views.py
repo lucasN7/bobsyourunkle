@@ -25,8 +25,8 @@ class ContractListCreateView(generics.ListCreateAPIView):
 
 	def post(self, request, *args, **kwargs):
 		return super().post(request, *args, **kwargs)
+
 	
-@permission_classes([IsOwnerOrAdmin])
 class ContractRetUpdDesView(generics.RetrieveUpdateDestroyAPIView):
 	""" RetrieveUpdateDestroy APIView to manage Contracts"""
 	serializer_class = ContractSerializer 
@@ -37,8 +37,7 @@ class ContractRetUpdDesView(generics.RetrieveUpdateDestroyAPIView):
 		return super().get(request, *args, **kwargs)
 	
 	def delete(self, request, *args, **kwargs):
-		if not request.user.is_staff:
-			return 
+		return
 		return super().delete(request, *args, **kwargs)
 
 
@@ -61,7 +60,6 @@ class UserListCreateView(FullPartialSerializerMixin, generics.ListCreateAPIView)
 		return super().post(request, *args, **kwargs)
 
 	
-@permission_classes([IsOwnerOrAdmin])
 class UserRetrieveDestroyView(mixins.DestroyModelMixin, generics.RetrieveAPIView):
 	""" Retrieve/Destroy APIView to manage Users"""
 	queryset = User.objects.all()

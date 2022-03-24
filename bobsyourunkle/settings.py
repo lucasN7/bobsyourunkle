@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-^hz+3#b#1qb1g7qic0)@=al(i#spr^-pbzsgpizo+z=^1^%#-4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost"]
 
 
 # Application definition
@@ -103,7 +103,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
-    # for API default access with be "admin" <=> user.is_staff == True
+    # for API default access with be IsOwnerOrAdmin - non admin users can see their data
     'DEFAULT_PERMISSION_CLASSES': [
         'core.permissions.IsOwnerOrAdmin',
     ],

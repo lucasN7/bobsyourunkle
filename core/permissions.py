@@ -3,24 +3,21 @@ from core.models import User, Contract
 
 class IsOwnerOrAdmin(permissions.BasePermission):
     """
-    Object-level permission to only allow users to retrieve their own information
-    Anything else than a GET is denied
+    1. Admins have all rights
+    2. Object-level permission to only allow clients to retrieve their own information
+    - POST is allowed for entry creation
+    - GET are allowed, data is restricted (here or in get_queryset)
+    - other methods are denied for clients
     """
     def has_permission(self, request, view):
-        if request.method != "GET":
-            return request.user.is_staff
+        if request.user.is_staff:
+            return True
+        if request.method not in ["GET", "POST"]:
+            return False
         return True
 
     def has_object_permission(self, request, view, obj):
-        # if admin return True
-        if request.method != "GET":
-            return request.user.is_staff
         
-        # a GET...
-        if request.user.is_staff:
-            return True
-
-        # If not admin: code dependant on object Types. We assume a "retrieve". 
         if isinstance(obj, User):
             return obj == request.user
         
