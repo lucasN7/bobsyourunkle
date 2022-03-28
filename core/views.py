@@ -1,12 +1,12 @@
 from django.http import HttpResponseForbidden
 from rest_framework.decorators import permission_classes
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, AllowAny
 from rest_framework import status, generics, mixins
 from .serializers import ContractReadSerializer, ContractWriteSerializer, UserFullSerializer, \
-	UserPartialSerializer, ContractCancelSerializer
-from .models import Contract, User
+	UserPartialSerializer, ContractCancelSerializer, ContractOptionSerializer
+from .models import Contract, User, ContractOption
 from .utils import FullPartialSerializerMixin
-from .permissions import IsOwnerOrAdmin
+from .permissions import IsOwnerOrAdmin, IsSuperAdmin
 
 
 """ Notes:
@@ -81,10 +81,24 @@ class ContractRetUpdDesView(FullPartialSerializerMixin, generics.RetrieveUpdateD
 		self.partial = True
 		return super().patch(request, *args, **kwargs)
 
-
+	
 class ContractCancelView(generics.UpdateAPIView):
 	""" UpdateAPIView to cancel contracts """
 	serializer_class = ContractCancelSerializer
 	queryset = Contract.objects.all()
 	lookup_field = 'number'
 	
+	
+# we only let super_users create new options! 
+@permission_classes([IsSuperAdmin])
+class ContractOptionCreateView(generics.CreateAPIView):
+	""" CreateAPIView to list contract options"""
+	serializer_class = ContractOptionSerializer
+	queryset = ContractOption.objects.all()
+	
+	
+# anyone can see the available option
+@permission_classes([AllowAny])
+class ContractOptionListView(generics.ListAPIView):
+	serializer_class = ContractOptionSerializer
+	queryset = ContractOption.objects.all()

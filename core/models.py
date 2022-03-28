@@ -4,10 +4,16 @@ from django.core.exceptions import ValidationError
 from datetime import date
 
 
+class ContractOption(models.Model):
+	name = models.CharField(max_length=20, unique=True,)
+	description = models.TextField()
+
+
 class Contract(models.Model):
 	""" Contracts! """
 	number = models.AutoField(primary_key=True)
 	clients = models.ManyToManyField(User, related_name='contracts')
+	options = models.ManyToManyField(ContractOption, related_name='contracts')
 	start_dt = models.DateField()
 	end_dt = models.DateField(null=True, blank=True)
 	cancel_dt = models.DateField(null=True, blank=True)	
@@ -36,6 +42,7 @@ class Contract(models.Model):
 	def clean(self):
 		if self.start_dt >= self.end_dt:
 			raise ValidationError("Contract end date cannot be before its start date")
+
 
 		
 	def save(self, *args, **kwargs):

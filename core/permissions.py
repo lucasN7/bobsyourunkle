@@ -28,3 +28,11 @@ class IsOwnerOrAdmin(permissions.BasePermission):
             return obj.clients.filter(id=request.user.id).exists()
 
         raise NotImplementedError("Permission not implemented for this Object Type")
+
+class IsSuperAdmin(permissions.BasePermission):
+    """
+    Allows access only to super_users.
+    """
+
+    def has_permission(self, request, view):
+        return bool(request.user and request.user.is_superuser)
