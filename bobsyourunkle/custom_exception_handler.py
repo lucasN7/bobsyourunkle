@@ -13,8 +13,4 @@ def django_error_handler(exc, context):
 	# print ValidationError nicely
 	if response is None and isinstance(exc, ValidationError):
 		return Response(status=400, data=exc.message_dict)
-	# try to catch and print exceptions to debug
-	if response is None:
-		status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-		return Response({"details " : repr(exc)}, status=status_code)
 	return response

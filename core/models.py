@@ -5,7 +5,7 @@ from datetime import date
 
 
 class Contract(models.Model):
-	""" """
+	""" Contracts! """
 	number = models.AutoField(primary_key=True)
 	clients = models.ManyToManyField(User, related_name='contracts')
 	start_dt = models.DateField()
@@ -41,5 +41,3 @@ class Contract(models.Model):
 	def save(self, *args, **kwargs):
 		self.full_clean()
 		super().save(*args, **kwargs)
-
-#TODO: extend user and make email mandatory? Remove username?
