@@ -5,6 +5,7 @@ from datetime import date
 
 
 class ContractOption(models.Model):
+	""" Contract Options """
 	name = models.CharField(max_length=20, unique=True,)
 	description = models.TextField()
 
@@ -16,9 +17,9 @@ class Contract(models.Model):
 	options = models.ManyToManyField(ContractOption, related_name='contracts')
 	start_dt = models.DateField()
 	end_dt = models.DateField(null=True, blank=True)
-	cancel_dt = models.DateField(null=True, blank=True)	
+	cancel_dt = models.DateField(null=True, blank=True)
 	created_dt = models.DateTimeField(auto_now_add=True)
-	created_by = models.ForeignKey(User, null=True, blank=True, 
+	created_by = models.ForeignKey(User, null=True, blank=True,
 								   on_delete=models.SET_NULL, related_name='contracts_created')
 	modified_dt = models.DateTimeField(auto_now=True)
 	modified_by = models.ForeignKey(User, null=True, blank=True, 

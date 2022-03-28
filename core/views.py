@@ -1,12 +1,12 @@
 from django.http import HttpResponseForbidden
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAdminUser, AllowAny
-from rest_framework import status, generics, mixins
+from rest_framework import generics, mixins
 from .serializers import ContractReadSerializer, ContractWriteSerializer, UserFullSerializer, \
 	UserPartialSerializer, ContractCancelSerializer, ContractOptionSerializer
 from .models import Contract, User, ContractOption
 from .utils import FullPartialSerializerMixin
-from .permissions import IsOwnerOrAdmin, IsSuperAdmin
+from .permissions import IsSuperAdmin
 
 
 """ Notes:
@@ -69,10 +69,6 @@ class ContractRetUpdDesView(FullPartialSerializerMixin, generics.RetrieveUpdateD
 	def get(self, request, *args, **kwargs):
 		self.partial = False
 		return super().get(request, *args, **kwargs)
-	
-	def post(self, request, *args, **kwargs):
-		self.partial = True
-		return super().post(request, *args, **kwargs)
 	
 	def patch(self, request, *args, **kwargs):
 		# do not allow User to fully modify their contract (PATCH are allowed for cancellation)

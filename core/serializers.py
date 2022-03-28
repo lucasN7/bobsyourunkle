@@ -31,7 +31,7 @@ class ContractReadSerializer(serializers.ModelSerializer):
 	clients = UserPartialSerializer(many=True, read_only=True)
 	class Meta:
 		model = Contract
-		fields = ("number", "start_dt", "end_dt", "cancel_dt", "created_dt", "created_by", 
+		fields = ("number", "start_dt", "end_dt", "cancel_dt", "created_dt", "created_by",
 				  "modified_dt", "modified_by", "clients", "status",)
 
 		
@@ -55,17 +55,17 @@ class ContractWriteSerializer(serializers.ModelSerializer):
 		fields = ("number", "start_dt", "end_dt", "cancel_dt", "created_dt", "created_by", 
 				  "modified_dt", "modified_by", "clients", "options",)
 
-	def validate(self, data):
+	def validate(self, attrs):
 		# a client cannot have the same option twice!
 		# note: should I move the start_date/end_date validation here from the model?
 		# maybe...
-		options_vals_name = [opt.name for opt in data["options"]]
-		clients_vals_id = [cli.id for cli in data["clients"]]
+		options_vals_name = [opt.name for opt in attrs["options"]]
+		clients_vals_id = [cli.id for cli in attrs["clients"]]
 		if ContractOption.objects.filter(contracts__clients__id__in=clients_vals_id,
 										 name__in=options_vals_name).exists():
 			raise serializers.ValidationError("One of the clients in this contract have already subscribed "
 											  "to one of these options.")
-		return data
+		return attrs
 
 
 class ContractCancelSerializer(serializers.ModelSerializer):
@@ -77,13 +77,13 @@ class ContractCancelSerializer(serializers.ModelSerializer):
 		model = Contract
 		fields = ("number", "cancel_dt",)
 
-	def validate(self, data):
+	def validate(self, attrs):
 		"""
 		Check that cancel is after today.
 		"""
-		if data.get('cancel_dt') is None or data['cancel_dt'] < date.today():
+		if attrs.get('cancel_dt') is None or attrs['cancel_dt'] < date.today():
 			raise serializers.ValidationError("Cancel date needs to be today or later")
-		return data
+		return attrs
 
 class ContractOptionSerializer(serializers.ModelSerializer):
 	""" ContractOption base Serializer """
