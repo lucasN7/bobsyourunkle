@@ -1,0 +1,38 @@
+- model: core.contractoption
+  pk: 1
+  fields:
+    name: porte_serrure
+    description: Vous égarez souvent vos clefs? Avec cette protection, vous ne paierez
+      plus une fortune un serrurier un samedi aprem'!
+- model: core.contractoption
+  pk: 2
+  fields:
+    name: degats_eaux
+    description: Meme valable si le jacuzzi du voisin du dessus déborde, n'hésitez
+      plus!
+- model: core.contractoption
+  pk: 3
+  fields:
+    name: tout_risque
+    description: Par toutatis, on se sait jamais ce qu'il peut arriver...
+- model: core.contractoption
+  pk: 4
+  fields:
+    name: travaux_urgents
+    description: On vous reloge jusqu'à 10jours en cas de travaux urgents (sujet à
+      expertise, voir conditions sur notre site web)
+- model: core.contractoption
+  pk: 5
+  fields:
+    name: incendie
+    description: Parce que ca arrive...
+- model: core.contractoption
+  pk: 6
+  fields:
+    name: tremblmt_terr
+    description: Parce que ca aussi, ca arrive...
+- model: core.contractoption
+  pk: 7
+  fields:
+    name: tsunami
+    description: Voila...
