@@ -20,7 +20,7 @@ I chose English to write the entire project because
 *   python manage.py migrate
 *   python manage.py loaddata core\fixtures\contract_options_fixture.yaml 
 3. Create a super-user: 
-* python manage.py create_superuser
+* python manage.py createsuperuser
 4. Recommanded to test: download Postman and use the provided postman collection and env: 
 * Import the postman environment (Unkle.postman_environment.json)
 * Import the postman collection (Bobs Your Unkle - testing.postman_collection.json)
